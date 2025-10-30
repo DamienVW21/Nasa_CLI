@@ -23,7 +23,7 @@ public class UserManagerCli {
 
     public static void main(String[] args) {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/nasa_db");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/nasa_java");
         dataSource.setUsername("postgres");
         dataSource.setPassword("postgres1");
 

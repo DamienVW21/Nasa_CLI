@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Neo {
 
+    // Default constructor - REQUIRED for Jackson
+    public Neo() {
+    }
+
     private String id;
     private String name;
     @JsonProperty("is_potentially_hazardous_asteroid")

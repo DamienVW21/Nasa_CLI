@@ -7,6 +7,9 @@ import java.util.Map;
 
 public class NeoFeedResponse {
 
+    public NeoFeedResponse() {
+    }
+
     // Map where key is string date
     // value is an array which we convert to a list
     @JsonProperty("near_earth_objects")

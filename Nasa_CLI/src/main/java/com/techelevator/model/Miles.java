@@ -4,6 +4,9 @@ package com.techelevator.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Miles {
+
+    public Miles() {
+    }
     @JsonProperty("estimated_diameter_min")
     private double estimatedDiameterMin;
     @JsonProperty("estimated_diameter_max")

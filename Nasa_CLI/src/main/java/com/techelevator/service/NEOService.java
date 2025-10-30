@@ -1,6 +1,7 @@
 package com.techelevator.service;
 
-import org.example.model.NeoFeedResponse;
+
+import com.techelevator.model.NeoFeedResponse;
 import org.springframework.web.client.RestTemplate;
 
 public class NEOService {
@@ -9,7 +10,7 @@ public class NEOService {
 
     private final String API_URL="https://api.nasa.gov/neo/rest/v1/feed";
 
-    private final String API_KEY="Your API key here";
+    private final String API_KEY="aCNpymLaFl4yGi2ms5GMcbeM8H3xIlXtu4bKUmyL";
 
     public NeoFeedResponse getNEOData(String date){
         String url = API_URL +

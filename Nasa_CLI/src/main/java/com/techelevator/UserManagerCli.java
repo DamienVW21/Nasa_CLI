@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -7,10 +9,13 @@ import java.util.Scanner;
 import javax.sql.DataSource;
 
 import com.techelevator.dao.JdbcUserDao;
+import com.techelevator.model.Neo;
+import com.techelevator.model.NeoFeedResponse;
 import com.techelevator.model.User;
 import com.techelevator.dao.UserDao;
 import com.techelevator.security.PasswordHasher;
 
+import com.techelevator.service.NEOService;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.bouncycastle.util.encoders.Base64;
 
@@ -23,7 +28,7 @@ public class UserManagerCli {
 
     public static void main(String[] args) {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/nasa_java");
+        dataSource.setUrl("jdbc:postgresql://localhost:5433/nasa_java");
         dataSource.setUsername("postgres");
         dataSource.setPassword("postgres1");
 
@@ -58,11 +63,52 @@ public class UserManagerCli {
                 showUsers();
             } else if ("l".equalsIgnoreCase(option)) {
                 loginUser();
+            } else if ("n".equalsIgnoreCase(option)) {
+                showNearEarthObjects();
             } else if ("q".equalsIgnoreCase(option)) {
                 System.out.println("Thanks for using the NEO App!");
                 break;
             } else {
                 System.out.println(option + " is not a valid option. Please select again.");
+            }
+        }
+    }
+
+    public void showNearEarthObjects() {
+        if (loggedInUser == null) {
+            System.out.println("Sorry. Only logged in users can see NEO information.");
+            System.out.println("Press enter to continue...");
+            System.out.flush();
+            userInput.nextLine();
+            return;
+        }
+        LocalDate date = null;
+        System.out.print("Date to show NEOs (hit enter for today's date or YYYY-MM-DD: ");
+        String strDate = userInput.nextLine();
+        try{
+            date = LocalDate.parse(strDate);
+        }catch (DateTimeParseException e) {
+            System.out.println("Using today's date");
+            date = LocalDate.now();
+        }
+        NEOService service = new NEOService();
+        NeoFeedResponse response = service.getNEOData(date + ""); // appending "" turns the object into a string
+        displayNeoObjects(response);
+    }
+
+    public void displayNeoObjects(NeoFeedResponse response){
+        for(String key : response.getNearEarthObjects().keySet()){
+            List<Neo> neoList = response.getNearEarthObjects().get(key);
+            int count = neoList.size();
+            System.out.println("For Date: " + key + " there are " + count + " NEOs");
+            for(Neo n : neoList){
+                System.out.println("Id: " + n.getId());
+                System.out.println("Name: " + n.getName());
+                System.out.println("Is potentially Hazardous " + n.isPotentiallyHazardousAsteroid());
+                System.out.println("Estimated Diameter: ");
+                System.out.println("\tMin (in miles): " + n.getEstimatedDiameter().getMiles().getEstimatedDiameterMin());
+                System.out.println("\tMax (in miles): " + n.getEstimatedDiameter().getMiles().getGetEstimatedDiameterMax());
+
             }
         }
     }
@@ -169,6 +215,7 @@ public class UserManagerCli {
     private void printMenu() {
         System.out.println("(A)dd a new User");
         System.out.println("(S)how all users");
+        System.out.println("(N)ear Earth Objects");
         System.out.println("(L)og in");
         System.out.println("(Q)uit");
         System.out.println();
